@@ -104,6 +104,15 @@ SESSION_FILE = os.path.join(BASE_DIR, SESSION_FILE)
 
 # نمایش خوانا از لیست آیدی سازنده‌ها (ممکنه یک یا چند آیدی باشه)
 SUPER_OWNER_IDS_DISPLAY = "، ".join(str(x) for x in SUPER_OWNER_IDS)
+
+# کلیدهای جدید ممکن است در config.pyهای قدیمی نباشند؛ با fallback امن خونده می‌شوند.
+try:
+    from config import (
+        LINKDIR_MAX_LINKS, LINKDIR_MIN_DELAY, LINKDIR_MAX_DELAY, PANEL_BOT_LINK,
+    )
+except Exception:
+    LINKDIR_MAX_LINKS, LINKDIR_MIN_DELAY, LINKDIR_MAX_DELAY = 200, 8, 15
+    PANEL_BOT_LINK = ""
 from database import db
 
 # ==================== پاکسازیِ یک‌باره‌ی کاملِ لیست «ویژه» ====================
@@ -1021,10 +1030,6 @@ HELP_OWNER = f"""🐝 BEEBOT · راهنمای مالک
   ▸ `تنظیم اسم ربات [اسم]` — ثبت اسم
   ▸ `حذف اسم ربات`
 
-◆ اسم تصادفی اعضا
-  ▸ `انتخاب اسم تصادفی` — وضعیت فعلی
-  ▸ `انتخاب اسم تصادفی فعال` / `انتخاب اسم تصادفی غیرفعال`
-
 ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
 🐝{BRAND_SIG}"""
 
@@ -1060,12 +1065,6 @@ HELP_OWNER_ACTIVATION = """🐝 BEEBOT · فعال‌سازی و مالکیت
   ▸ `حذف تغییر دستور [اسم جدید]`
   ▸ `لیست تغییر دستورها` / `پاکسازی تغییر دستورها`
 
-◆ اسم تصادفی اعضا
-  ▸ `انتخاب اسم تصادفی فعال` — پیش‌فرض روشن
-  ▸ `انتخاب اسم تصادفی غیرفعال`
-  ▸ `انتخاب اسم تصادفی` — نمایش وضعیت
-  ⚠️ تغییرش فقط دست مالک گروه و سازنده‌ست.
-
 ◆ اسم اختصاصی ربات
   ▸ `اسم ربات` — نمایش اسم فعلی
   ▸ `حذف اسم ربات`
@@ -1084,12 +1083,13 @@ HELP_OWNER_SUPER = f"""🐝 BEEBOT · دستورهای سازنده اصلی
   ▸ `تنظیم پیام عضویت [متن]`
   ▸ `ریست پیام عضویت`
 
-◆ پیام و آمار
+◆ لینک‌دونی (عضویت خودکار)
+  ▸ `لینکدونی [لینک کانال]` — خواندن لینک گروه‌های کانال و عضویت خودکار
+  ▸ `وضعیت لینکدونی` / `توقف لینکدونی`
+
+◆ پیام‌رسانی و گروه‌ها
   ▸ `ارسال به همه [متن]` — پیام به همه‌ی گروه‌ها
   ▸ `لفت همه` / `تایید لفت همه` — خروج از همه‌ی گروه‌ها
-
-◆ استخاره
-  ▸ `ذخیره استخاره` (ریپلای روی عکس) — افزودن عکس به مجموعه
 
 ◆ مدیریت سراسری کاربرها
   ▸ `محروم کامل [آیدی] [دلیل]` — سکوت در همه‌ی گروه‌ها
@@ -1098,8 +1098,6 @@ HELP_OWNER_SUPER = f"""🐝 BEEBOT · دستورهای سازنده اصلی
   ▸ `نادید گرفتن [آیدی]` (پیوی) — ربات بهش جواب نمی‌ده
   ▸ `رفع نادید گرفتن [آیدی]`
   ▸ `لیست نادید گرفته ها`
-
-ℹ️ دستورهای «بگو» و «یاد بده» کلاً غیرفعال‌اند.
 
 ↩️ `راهنما مالک` برای برگشت | `راهنما` برای منوی اصلی"""
 
@@ -1117,8 +1115,7 @@ HELP_ADMIN = f"""🐝 BEEBOT · راهنمای ادمین
   ③  `راهنما فیلتر`
       کلمات و رسانه‌های فیلترشده
 
-
-  ⑤  `راهنما مقام`
+  ④  `راهنما مقام`
       مقام‌بندی و لیست‌های گروه
 
 ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
@@ -1258,16 +1255,6 @@ HELP_FUN = f"""🐝 BEEBOT · راهنمای سرگرمی
   ▸ `دانستنی` · `دقت` · `داستان` · `چیستان` · `بیو`
   ▸ `انگیزشی` · `خاطره` · `خطبه` · `پ ن پ` · `تکست` · `چالش`
   ↳ هر بار یک مورد تصادفی از دسته‌ی انتخابی می‌فرسته
-
-◆ تصویر
-  ▸ `استخاره` — تصویر استخاره
-  ▸ `فتوگرافی` یا `عکس رندوم` — عکس تصادفی
-
-◆ اطلاعات
-  ▸ `قیمت طلا` · `قیمت سکه` — نرخ طلا و سکه
-  ▸ `قیمت دلار` — نرخ ارز
-  ▸ `قیمت رمزارز` — نرخ ارز دیجیتال
-  ▸ `معنی [اسم]` — معنی اسم
 
 ◆ ساخت
   ▸ `فونت [متن]` — متن با فونت‌های مختلف
@@ -3975,10 +3962,9 @@ async def build_admin_group_info(chat_id):
         else:
             locks_state[key] = db.is_locked(chat_id, key)
 
-    # نکته: فعالان/رتبه‌بندی (user_activity_daily) عمداً اینجا نیست - چون
-    # رزالوکردنِ اسمِ هرکاربر یک client.get_entity جداست و این تابع باید
-    # سریع بمونه (بعدِ هر toggle یک‌بار صدا زده می‌شه). برای اون از
-    # build_activity_leaderboard (فقط وقتی ادمین واقعاً می‌خواد ببینتش) استفاده کن.
+    # نکته: آمار فعالیت/رتبه‌بندی عمداً اینجا نیست - چون resolve کردنِ اسمِ
+    # هر کاربر یک client.get_entity جداست و این تابع باید سریع بمونه (بعدِ
+    # هر toggle یک‌بار صدا زده می‌شه).
 
     return {
         "ok": True,
@@ -5335,6 +5321,9 @@ async def private_message_handler(_client, event):
     # بازی کندو در پیوی هم در دسترسه (کیف پول سراسریه).
     if await handle_game_command(event, None, sender_id, text, text.lower(), is_admin=False):
         return
+    # لینک‌دونی از پیوی هم اجرا می‌شه (گزارش‌ها به همین چت می‌آد).
+    if await handle_linkdir_command(event, sender_id, sender_id, text):
+        return
     if text.lower().startswith("ارسال به همه "):
         if sender_id not in SUPER_OWNER_IDS:
             await pv_reply(event, "⛔ فقط سازنده اصلی میتواند از این دستور استفاده کند!")
@@ -5540,6 +5529,10 @@ async def private_message_handler(_client, event):
   ▸ پیام عضویت اجباری ....... {join_status}
 
 {BRAND_BAR}
+◆ لینک‌دونی
+  ▸ `لینکدونی [لینک کانال]` — عضویت خودکار در گروه‌های کانال
+  ▸ `وضعیت لینکدونی` / `توقف لینکدونی`
+
 ◆ پیام عضویت اجباری
   (همون پیامی که تازه‌واردهای پی‌وی می‌بینن)
   ▸ `پیام عضویت` — دیدن متن فعلی
@@ -6058,6 +6051,14 @@ async def message_handler(_client, event):
     # ==================== بازی کندو (بیز / میو) ====================
     # قبل از فیلتر رسانه/Auto Mod اجرا می‌شه تا «بیز» و «میو» اسپم حساب نشن.
     if await handle_game_command(event, chat_id, sender_id, text, lower_text, is_admin):
+        return
+
+    # ==================== لینک‌دونی (فقط سازنده اصلی) ====================
+    if await handle_linkdir_command(event, chat_id, sender_id, text):
+        return
+
+    # ==================== گیت «ربات ادمین نیست» ====================
+    if await _bot_admin_gate(event, chat_id, sender_id, lower_text, is_admin):
         return
 
     # ==================== فیلتر رسانه ====================
@@ -6710,7 +6711,7 @@ async def message_handler(_client, event):
         or (SPEAKER_MODE == "short" and is_reply_to_bot)
         or SPEAKER_MODE in ("polite", "rude")
     )
-    looks_like_command = lower_text.startswith(("بن ", "سکوت ", "قفل ", "پاک ", "باز ", "تنظیم ", "حذف ", "لیست ", "راهنما", "آموزش", "دوز", "فعال", "روشن", "لفت", "ارسال", "وضعیت", "فونت ", "فونتها ", "فونت‌ها "))
+    looks_like_command = lower_text.startswith(("بن ", "سکوت ", "قفل ", "پاکسازی ", "باز ", "تنظیم ", "حذف ", "لیست ", "راهنما", "آموزش", "دوز", "فعال", "روشن", "لفت", "ارسال", "وضعیت", "فونت ", "فونتها ", "فونت‌ها "))
     if SPEAKER_MODE != "off" and speaker_should_reply and not looks_like_command and text:
         async def _answer_speaker(ev=event, txt=text, mode=SPEAKER_MODE):
             async with _SPEAKER_SEMAPHORE:
@@ -9779,6 +9780,490 @@ async def handle_game_command(event, chat_id, user_id, text, lower_text=None, is
         await _g_daily_gift(event, user_id)
     elif is_lottery:
         await _g_lottery(event, user_id)
+    return True
+
+
+# ==================== گیتِ «ربات ادمین نیست» ====================
+# وقتی ربات توی گروه ادمین نیست، به‌جای خطای خام یا سکوت، یک کارتِ راهنما
+# نشان می‌دهیم که دقیقاً می‌گوید چه دسترسی‌هایی لازم است و چطور ادمین کند.
+_BOT_ADMIN_CACHE = {}
+_BOT_ADMIN_NOTICE = {}
+
+
+async def _bot_is_group_admin(chat_id):
+    """آیا ربات توی این گروه ادمین (یا سازنده) است؟ نتیجه ۵ دقیقه کش می‌شود.
+    اگر بررسی ممکن نبود، True برمی‌گردانیم (fail-open) تا دستورها بی‌دلیل
+    بلاک نشوند."""
+    now = time.time()
+    cached = _BOT_ADMIN_CACHE.get(chat_id)
+    if cached and now - cached[0] < (300 if cached[1] else 45):
+        return cached[1]
+    ok = True
+    try:
+        me = await client.get_me()
+        perms = await client.get_permissions(chat_id, me.id)
+        ok = bool(getattr(perms, "is_admin", False) or getattr(perms, "is_creator", False))
+    except Exception:
+        ok = True
+    _BOT_ADMIN_CACHE[chat_id] = (now, ok)
+    return ok
+
+
+def _admin_required_message():
+    lines = [
+        "🐝 𝗕𝗘𝗘𝗕𝗢𝗧 · دسترسی ادمین لازمه",
+        "╭──────────────────────╮",
+        "┃ ⚠️ برای اجرای کاملِ این دستور،",
+        "┃ ربات باید توی گروه ادمین باشه.",
+        "╰──────────────────────╯",
+        "",
+        "🔧 **چطور ادمینم کنی؟**",
+        "  ۱. روی اسم گروه بزن → «مدیریت اعضا»",
+        "  ۲. BEEBOT رو پیدا کن → «ادمین»",
+        "  ۳. این دسترسی‌ها رو روشن کن:",
+        "     ▸ حذف پیام",
+        "     ▸ محدودکردن اعضا (بن)",
+        "     ▸ سنجاق‌کردن پیام",
+        "▸ بعد همین دستور رو دوباره بزن.",
+        "",
+        ACT_RULE,
+        "🎛 **مدیریت کامل، بدون دردسر**",
+        "قفل‌ها، تنظیمات، بازی و بکاپ",
+        "از پنل اختصاصی مالک گروه:",
+        "▸ لینک گروهت رو به پیوی ربات پنل بفرست.",
+    ]
+    if PANEL_BOT_LINK:
+        lines.append(f"▸ {PANEL_BOT_LINK}")
+    lines.append(BRAND_FOOTER)
+    return "\n".join(lines)
+
+
+def _is_enforced_admin_command(t):
+    """دستورهایی که واقعاً به دسترسی ادمینِ ربات نیاز دارن (حذف/محدودکردن/سنجاق).
+    تنظیم قفل و فیلتر فقط ذخیره‌ی تنظیمه، پس بلاک نمی‌شه."""
+    t = (t or "").strip()
+    exact = {
+        "بن", "رفع بن", "حذف بن", "سکوت", "رفع سکوت", "حذف سکوت",
+        "کیک", "اخطار", "حذف اخطار", "رفع اخطار", "سنجاق", "حذف سنجاق",
+    }
+    if t in exact:
+        return True
+    if t.startswith(("بن ", "سکوت ", "کیک ", "اخطار ")):
+        return True
+    if t.startswith("پاکسازی") and t not in (
+        "پاکسازی لیست بن", "پاکسازی لیست سکوت",
+        "پاکسازی فیلتر", "پاکسازی فیلتر رسانه",
+    ):
+        return True
+    return False
+
+
+def _is_any_admin_command(t):
+    """همه‌ی دستورهای مدیریتی (چه آن‌هایی که واقعاً به ادمین نیاز دارن، چه
+    تنظیم‌هایی که فقط با ادمین‌بودن ربات «اعمال» می‌شن)."""
+    t = (t or "").strip()
+    if _is_enforced_admin_command(t):
+        return True
+    return t.startswith((
+        "قفل ", "باز کردن ", "بازکردن ", "قفل بیو", "بازکردن بیو",
+        "فیلتر ", "حذف فیلتر", "پاکسازی فیلتر", "فیلتر رسانه",
+        "تنظیم اخطار", "محدودیت لینک", "حالت بن",
+        "تنظیم لقب", "حذف لقب",
+    ))
+
+
+async def _bot_admin_gate(event, chat_id, sender_id, lower_text, is_admin_user):
+    """اگر کاربر مدیر است و دستورش مدیریتی است ولی ربات ادمین نیست: کارت راهنما
+    را (حداکثر هر ۱۰ دقیقه یک‌بار برای هر گروه) می‌فرستد.
+    برای دستورهای عملیاتی (بن/حذف/سنجاق/پاکسازی) True برمی‌گرداند تا اجرا نشوند؛
+    برای تنظیم‌ها (قفل/فیلتر/...) False برمی‌گرداند تا تنظیم ذخیره شود."""
+    if not chat_id or not is_admin_user:
+        return False
+    if not _is_any_admin_command(lower_text):
+        return False
+    if await _bot_is_group_admin(chat_id):
+        return False
+
+    now = time.time()
+    if now - _BOT_ADMIN_NOTICE.get(chat_id, 0) > 600:
+        _BOT_ADMIN_NOTICE[chat_id] = now
+        try:
+            await event.reply(_admin_required_message())
+        except Exception:
+            pass
+    return _is_enforced_admin_command(lower_text)
+
+
+# ==================== لینک‌دونی: عضویت خودکار از یک کانال ====================
+# سازنده اصلی لینک کانال را می‌دهد؛ ربات عضو کانال می‌شود، همه‌ی لینک‌های
+# گروهی داخل پیام‌های کانال را جمع می‌کند و یکی‌یکی عضو می‌شود.
+LINKDIR_TASK = None
+LINKDIR_STOP = False
+LINKDIR_REPORT_EVERY = 10
+LINKDIR_STATE = {
+    "running": False, "total": 0, "done": 0,
+    "joined": 0, "skipped": 0, "failed": 0, "current": "",
+    "channel": "",
+}
+
+
+def _linkdir_card(title, lines, tail=None):
+    body = "\n".join((f"┃ {ln}" if str(ln).strip() else "┃") for ln in lines)
+    text = (
+        f"🐝 𝗕𝗘𝗘𝗕𝗢𝗧 · {title}\n"
+        "╭──────────────────────╮\n"
+        f"{body}\n"
+        "╰──────────────────────╯"
+    )
+    if tail:
+        text += "\n" + tail
+    return text + "\n" + BRAND_FOOTER
+
+
+async def _linkdir_say(chat_id, text):
+    try:
+        await client.send_message(chat_id, text)
+    except Exception:
+        pass
+
+
+async def _linkdir_reply(event, chat_id, text):
+    """پاسخِ فوریِ دستور (با reply تا به پیام کاربر وصل باشه)؛ اگه نشد،
+    مستقیم به چت می‌فرستد."""
+    try:
+        await event.reply(text)
+        return
+    except Exception:
+        pass
+    await _linkdir_say(chat_id, text)
+
+
+def _linkdir_progress_card(done=False, stopped=False):
+    st = LINKDIR_STATE
+    if stopped:
+        title = "لینک‌دونی متوقف شد ⏹"
+    elif done:
+        title = "لینک‌دونی تمام شد ✅"
+    else:
+        title = "لینک‌دونی در حال اجرا 🔗"
+    lines = [
+        f"🔎 کل لینک‌ها: **{_g_num(st['total'])}**",
+        f"✅ عضو شدم: **{_g_num(st['joined'])}**",
+        f"⏭ رد شد: **{_g_num(st['skipped'])}**",
+        f"❌ ناموفق: **{_g_num(st['failed'])}**",
+        "",
+        f"📊 پیشرفت: **{_g_num(st['done'])}** از **{_g_num(st['total'])}**",
+    ]
+    if not done and st.get("current"):
+        cur = str(st["current"])
+        lines.append(f"▸ در حال: `{cur[:60]}`")
+    return _linkdir_card(title, lines)
+
+
+async def _linkdir_collect_links(entity):
+    """همه‌ی لینک‌های گروهی داخل پیام‌های کانال را برمی‌گرداند: [(url, id), ...]"""
+    links, seen = [], set()
+    offset = 0
+    pagination = True
+    pages = 0
+    while len(links) < LINKDIR_MAX_LINKS and pages < 10:
+        try:
+            if offset and pagination:
+                msgs = await client.get_messages(entity, limit=100, offset_id=offset)
+            else:
+                msgs = await client.get_messages(entity, limit=100)
+        except TypeError:
+            # بعضی نسخه‌های SplusLib پارامتر offset_id را قبول نمی‌کنند.
+            pagination = False
+            try:
+                msgs = await client.get_messages(entity, limit=min(200, LINKDIR_MAX_LINKS))
+            except Exception:
+                break
+        except Exception as e:
+            safe_print(f"[linkdir] خطا در خواندن پیام‌های کانال: {e}")
+            break
+
+        if not msgs:
+            break
+        pages += 1
+
+        for m in msgs:
+            text = getattr(m, "message", None) or getattr(m, "text", None) or ""
+            if not text:
+                continue
+            for mt in LINK_PATTERN.finditer(text):
+                ident = mt.group(1)
+                key = ident.lower()
+                if key in seen:
+                    continue
+                seen.add(key)
+                url = mt.group(0)
+                if not url.lower().startswith("http"):
+                    url = "https://" + url
+                links.append((url, ident))
+                if len(links) >= LINKDIR_MAX_LINKS:
+                    break
+            if len(links) >= LINKDIR_MAX_LINKS:
+                break
+
+        last_id = getattr(msgs[-1], "id", 0)
+        if not pagination or not last_id or last_id == offset:
+            break
+        offset = last_id
+
+    return links
+
+
+async def _linkdir_resolve_channel(raw):
+    """کانالِ لینک‌دونی را پیدا و (در صورت نیاز) عضویت در آن را انجام می‌دهد."""
+    raw = (raw or "").strip()
+    if not raw:
+        return None, "لینک کانال خالیه."
+
+    # @username
+    if raw.startswith("@"):
+        handle = raw[1:].strip()
+        try:
+            ent = await client.get_entity(handle)
+            try:
+                await client(functions.channels.JoinChannelRequest(ent))
+            except Exception:
+                pass
+            return ent, None
+        except Exception as e:
+            return None, e
+
+    link, ident = _extract_group_link(raw)
+    if link:
+        ent, err = await _try_join_chat(link, ident)
+        if ent:
+            return ent, None
+        # شاید از قبل عضو بوده؛ دوباره به‌عنوان entity امتحان کن.
+        try:
+            return await client.get_entity(ident), None
+        except Exception:
+            return None, err
+
+    # خودِ رشته را به‌عنوان آیدی/یوزرنیم امتحان کن.
+    try:
+        ent = await client.get_entity(raw)
+        try:
+            await client(functions.channels.JoinChannelRequest(ent))
+        except Exception:
+            pass
+        return ent, None
+    except Exception as e:
+        return None, e
+
+
+async def _linkdir_run(chat_id, channel_entity):
+    global LINKDIR_TASK, LINKDIR_STOP
+    try:
+        links = await _linkdir_collect_links(channel_entity)
+        LINKDIR_STATE.update({
+            "running": True, "total": len(links), "done": 0,
+            "joined": 0, "skipped": 0, "failed": 0, "current": "",
+        })
+
+        if not links:
+            await _linkdir_say(chat_id, _linkdir_card(
+                "لینک‌دونی خالی بود",
+                ["هیچ لینک گروهی توی پیام‌های این کانال پیدا نشد.",
+                 "▸ مطمئن شو لینک‌ها داخل خودِ پیام‌ها هستن (نه فقط دکمه/بیو)."],
+            ))
+            return
+
+        await _linkdir_say(chat_id, _linkdir_card(
+            "شروع لینک‌دونی 🚀",
+            [
+                f"🔎 **{_g_num(len(links))}** لینک پیدا شد.",
+                f"⏱ بین هر عضویت {LINKDIR_MIN_DELAY} تا {LINKDIR_MAX_DELAY} ثانیه.",
+                f"📣 هر {LINKDIR_REPORT_EVERY} گروه یک گزارش می‌فرستم.",
+            ],
+            "▸ برای توقف: `توقف لینکدونی`",
+        ))
+
+        for i, (url, ident) in enumerate(links, 1):
+            if LINKDIR_STOP:
+                break
+
+            LINKDIR_STATE["current"] = url
+            ent, err = await _try_join_chat(url, ident)
+
+            # اگر Flood خورد، یک‌بار ۶۰ ثانیه صبر و تلاش دوباره.
+            err_text = str(err or "").lower()
+            if not ent and ("flood" in err_text or "too many" in err_text):
+                await asyncio.sleep(60)
+                ent, err = await _try_join_chat(url, ident)
+                err_text = str(err or "").lower()
+
+            if ent:
+                # اگه لینکِ خودِ کانال لینک‌دونی بود، نه عضویت جدید حساب کن نه لفت بده.
+                if getattr(ent, "id", None) == getattr(channel_entity, "id", None):
+                    LINKDIR_STATE["skipped"] += 1
+                    LINKDIR_STATE["done"] = i
+                    await asyncio.sleep(random.uniform(LINKDIR_MIN_DELAY, LINKDIR_MAX_DELAY))
+                    continue
+
+                is_broadcast = bool(
+                    isinstance(ent, types.Channel)
+                    and getattr(ent, "broadcast", False)
+                    and not getattr(ent, "megagroup", False)
+                )
+                if is_broadcast:
+                    # لینک کانال بود، نه گروه؛ عضویت در کانال به‌درد نمی‌خوره.
+                    try:
+                        await _try_leave_chat(ent, getattr(ent, "id", 0))
+                    except Exception:
+                        pass
+                    LINKDIR_STATE["skipped"] += 1
+                else:
+                    LINKDIR_STATE["joined"] += 1
+                    try:
+                        title = getattr(ent, "title", None) or str(ident)
+                        db.add_group(getattr(ent, "id", 0), title)
+                    except Exception:
+                        pass
+            else:
+                if any(k in err_text for k in ("already", "participant", "member", "duplicate")):
+                    LINKDIR_STATE["skipped"] += 1
+                else:
+                    LINKDIR_STATE["failed"] += 1
+
+            LINKDIR_STATE["done"] = i
+
+            if i % LINKDIR_REPORT_EVERY == 0 and i < len(links):
+                await _linkdir_say(chat_id, _linkdir_progress_card())
+
+            await asyncio.sleep(random.uniform(LINKDIR_MIN_DELAY, LINKDIR_MAX_DELAY))
+
+        await _linkdir_say(chat_id, _linkdir_progress_card(done=True, stopped=bool(LINKDIR_STOP)))
+    except Exception as e:
+        safe_print(f"[linkdir] خطای کلی: {e}")
+        try:
+            await _linkdir_say(chat_id, _linkdir_card(
+                "لینک‌دونی متوقف شد",
+                [f"❌ خطا: `{type(e).__name__}: {e}`"],
+            ))
+        except Exception:
+            pass
+    finally:
+        LINKDIR_STATE["running"] = False
+        LINKDIR_STATE["current"] = ""
+        LINKDIR_TASK = None
+        LINKDIR_STOP = False
+
+
+async def handle_linkdir_command(event, chat_id, user_id, text):
+    """دستورهای لینک‌دونی (فقط سازنده اصلی). True یعنی پیام مصرف شد."""
+    global LINKDIR_TASK, LINKDIR_STOP
+    raw = (text or "").strip()
+    norm = raw.replace("لینک دونی", "لینکدونی").replace("لینک‌دونی", "لینکدونی")
+    low = norm.lower()
+
+    if not (low == "لینکدونی" or low.startswith("لینکدونی ")
+            or low in ("توقف لینکدونی", "وضعیت لینکدونی")):
+        return False
+
+    if user_id not in SUPER_OWNER_IDS:
+        try:
+            await event.reply("⛔ **لینک‌دونی فقط برای سازنده‌ی اصلی رباته.**")
+        except Exception:
+            pass
+        return True
+
+    # توقف
+    if low == "توقف لینکدونی":
+        if LINKDIR_TASK and not LINKDIR_TASK.done():
+            LINKDIR_STOP = True
+            await _linkdir_reply(event, chat_id, _linkdir_card(
+                "در حال توقف…",
+                ["▸ بعد از عضویت فعلی متوقف می‌شه."],
+            ))
+        else:
+            await _linkdir_reply(event, chat_id, "▸ الان عملیاتی در حال اجرا نیست.")
+        return True
+
+    # وضعیت
+    if low == "وضعیت لینکدونی":
+        saved = LINKDIR_STATE.get("channel") or ""
+        if not saved:
+            try:
+                saved = db.get_setting("linkdir_channel", "") or ""
+            except Exception:
+                pass
+        lines = [
+            f"📡 کانال ذخیره‌شده: `{saved or '—'}`",
+            f"📊 وضعیت: {'در حال اجرا 🔄' if LINKDIR_STATE.get('running') else 'آماده ✅'}",
+        ]
+        if LINKDIR_STATE.get("total"):
+            lines += [
+                "",
+                f"🔎 کل: {_g_num(LINKDIR_STATE['total'])}",
+                f"✅ عضو شده: {_g_num(LINKDIR_STATE['joined'])}",
+                f"⏭ رد شده: {_g_num(LINKDIR_STATE['skipped'])}",
+                f"❌ ناموفق: {_g_num(LINKDIR_STATE['failed'])}",
+                f"📊 پیشرفت: {_g_num(LINKDIR_STATE['done'])} از {_g_num(LINKDIR_STATE['total'])}",
+            ]
+        await _linkdir_reply(event, chat_id, _linkdir_card("وضعیت لینک‌دونی", lines))
+        return True
+
+    # راهنما (بدون آرگومان)
+    if low == "لینکدونی":
+        saved = LINKDIR_STATE.get("channel") or ""
+        if not saved:
+            try:
+                saved = db.get_setting("linkdir_channel", "") or ""
+            except Exception:
+                pass
+        lines = [
+            "این قابلیت لینک یک کانال «لینک‌دونی» را می‌گیرد،",
+            "خودش عضو کانال می‌شود، همه‌ی لینک‌های گروهیِ",
+            "داخل پیام‌های کانال را جمع می‌کند و یکی‌یکی",
+            "عضو همه‌ی گروه‌ها می‌شود.",
+            "",
+            "▸ `لینکدونی [لینک کانال]` — شروع",
+            "▸ `وضعیت لینکدونی` — پیشرفت",
+            "▸ `توقف لینکدونی` — توقف",
+            "",
+            f"📡 کانال ذخیره‌شده: `{saved or '—'}`",
+        ]
+        await _linkdir_reply(event, chat_id, _linkdir_card("راهنمای لینک‌دونی", lines))
+        return True
+
+    # شروع با لینک
+    if LINKDIR_TASK and not LINKDIR_TASK.done():
+        await _linkdir_reply(event, chat_id, _linkdir_card(
+            "یک عملیات در حال اجراست",
+            ["▸ اول `توقف لینکدونی` رو بزن، بعد دوباره شروع کن."],
+        ))
+        return True
+
+    target = norm[len("لینکدونی"):].strip()
+    if not target:
+        await _linkdir_reply(event, chat_id, "❌ لینک کانال رو بعد از `لینکدونی` بنویس.")
+        return True
+
+    entity, err = await _linkdir_resolve_channel(target)
+    if not entity:
+        await _linkdir_reply(event, chat_id, _linkdir_card(
+            "دسترسی به کانال نشد",
+            [
+                "❌ نتونستم کانال رو پیدا/عضو بشم.",
+                "▸ مطمئن شو لینک درسته و ربات اجازه‌ی عضویت داره.",
+                f"▸ خطا: `{str(err)[:120]}`" if err else "",
+            ],
+        ))
+        return True
+
+    LINKDIR_STATE["channel"] = target
+    try:
+        db.set_setting("linkdir_channel", target)
+    except Exception:
+        pass
+
+    LINKDIR_STOP = False
+    LINKDIR_TASK = asyncio.create_task(_linkdir_run(chat_id, entity))
     return True
 
 

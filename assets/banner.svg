@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400" width="1280" height="400" role="img" aria-label="BEEBOT — group management, panels, honey game">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0d12"/>
+      <stop offset="0.55" stop-color="#0f141c"/>
+      <stop offset="1" stop-color="#141b26"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe08a"/>
+      <stop offset="0.45" stop-color="#f5c542"/>
+      <stop offset="1" stop-color="#d99a1d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#f5c542" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#f5c542" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="hex" width="56" height="48" patternUnits="userSpaceOnUse">
+      <path d="M14 0 L42 0 L56 24 L42 48 L14 48 L0 24 Z" fill="none" stroke="#f5c542" stroke-opacity="0.075" stroke-width="1"/>
+    </pattern>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <clipPath id="bodyClip">
+      <ellipse cx="0" cy="0" rx="72" ry="48"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1280" height="400" fill="url(#bg)"/>
+  <rect width="1280" height="400" fill="url(#hex)"/>
+  <circle cx="180" cy="200" r="210" fill="url(#glow)"/>
+  <circle cx="1080" cy="60" r="180" fill="url(#glow)" opacity="0.45"/>
+
+  <!-- decorative rings -->
+  <g fill="none" stroke="#f5c542" stroke-opacity="0.12">
+    <circle cx="1130" cy="300" r="70"/>
+    <circle cx="1130" cy="300" r="96"/>
+    <circle cx="1130" cy="300" r="122"/>
+  </g>
+
+  <!-- bee -->
+  <g transform="translate(185 205)">
+    <ellipse cx="0" cy="10" rx="110" ry="70" fill="#f5c542" opacity="0.10" filter="url(#soft)"/>
+    <g opacity="0.9">
+      <ellipse cx="-8" cy="-54" rx="48" ry="24" fill="#ffffff" opacity="0.16" transform="rotate(-30 -8 -54)"/>
+      <ellipse cx="30" cy="-60" rx="42" ry="21" fill="#ffffff" opacity="0.11" transform="rotate(-8 30 -60)"/>
+    </g>
+    <ellipse cx="0" cy="0" rx="72" ry="48" fill="url(#gold)"/>
+    <g clip-path="url(#bodyClip)" fill="#12151b" opacity="0.88">
+      <rect x="-36" y="-52" width="16" height="104" rx="8"/>
+      <rect x="-6" y="-52" width="16" height="104" rx="8"/>
+      <rect x="24" y="-52" width="16" height="104" rx="8"/>
+    </g>
+    <path d="M70 2 l26 9 l-26 10 z" fill="#12151b"/>
+    <circle cx="-78" cy="-6" r="34" fill="#12151b"/>
+    <circle cx="-90" cy="-14" r="7" fill="#f5c542"/>
+    <path d="M-98 -34 q-8 -22 -28 -26" stroke="#f5c542" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="-127" cy="-62" r="5" fill="#f5c542"/>
+    <path d="M-104 6 q10 8 20 0" stroke="#f5c542" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- title -->
+  <g font-family="Segoe UI, Inter, Arial, Helvetica, sans-serif">
+    <text x="330" y="168" font-size="94" font-weight="800" letter-spacing="7" fill="url(#gold)">BEEBOT</text>
+    <text x="334" y="212" font-size="19" letter-spacing="4.2" fill="#93a1b5">GROUP MANAGEMENT · PANELS · HONEY GAME</text>
+    <line x1="334" y1="242" x2="1020" y2="242" stroke="#f5c542" stroke-opacity="0.28"/>
+    <text x="334" y="278" font-size="15" letter-spacing="2.4" fill="#66717f">SOROUSH / SPLUS   •   PYTHON   •   SQLITE   •   ASYNCIO</text>
+    <g transform="translate(334 306)">
+      <rect x="0" y="0" width="92" height="30" rx="15" fill="#f5c542" fill-opacity="0.12" stroke="#f5c542" stroke-opacity="0.4"/>
+      <text x="46" y="20" text-anchor="middle" font-size="13" letter-spacing="1.5" fill="#f5c542">v1.0</text>
+      <rect x="102" y="0" width="150" height="30" rx="15" fill="#ffffff" fill-opacity="0.04" stroke="#ffffff" stroke-opacity="0.12"/>
+      <text x="177" y="20" text-anchor="middle" font-size="13" letter-spacing="1.2" fill="#9aa6b5">MULTI-SELF READY</text>
+    </g>
+  </g>
+</svg>
