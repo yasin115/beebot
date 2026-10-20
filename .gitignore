@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -218,3 +219,22 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+=======
+# پروژه‌ی beebot
+__pycache__/
+*.pyc
+manager_data/
+state.json
+group_registry.db
+session.txt
+session*.txt
+bot_heartbeat.txt
+otp_code.txt
+bot_activation.txt
+group_bot.db
+*.session
+.vizhe_wiped_once
+estekhare_pool/
+gifs_pool/
+*.zip
+>>>>>>> 6093173 (initial beebot)
